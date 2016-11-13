@@ -3,7 +3,7 @@ from django.db import models
 
 class Statement(models.Model):
     """
-    A short (<255) character message that is part of a dialog.
+    A message that is part of a dialog of conversation.
     """
 
     text = models.CharField(
@@ -12,6 +12,15 @@ class Statement(models.Model):
         null=False,
         max_length=255
     )
+
+    conversation = models.ForeignKey(
+        'Conversation',
+        related_name='statements',
+        blank=True,
+        null=True
+    )
+
+    time_created = models.DateTimeField(auto_now_add=True)
 
     extra_data = models.CharField(max_length=500)
 
@@ -138,3 +147,12 @@ class Response(models.Model):
             statement if len(statement) <= 20 else statement[:17] + '...',
             response if len(response) <= 40 else response[:37] + '...'
         )
+
+
+class Conversation(models.Model):
+    """
+    A sequence of statements representing a conversation.
+    """
+
+    def __str__(self):
+        return str(self.id)

@@ -10,6 +10,7 @@ class Statement(object):
 
     def __init__(self, text, **kwargs):
         self.text = text
+        self.conversation_id = kwargs.pop('conversation_id', None)
         self.in_response_to = kwargs.pop('in_response_to', [])
         self.extra_data = kwargs.pop('extra_data', {})
 
@@ -123,6 +124,9 @@ class Statement(object):
         data['text'] = self.text
         data['in_response_to'] = []
         data['extra_data'] = self.extra_data
+
+        if self.conversation_id:
+            data['conversation_id'] = self.conversation_id
 
         for response in self.in_response_to:
             data['in_response_to'].append(response.serialize())

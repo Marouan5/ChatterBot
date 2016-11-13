@@ -1,24 +1,25 @@
-from unittest import TestCase
-from chatterbot.conversation.session import Session, ConversationSessionManager
+from chatterbot.conversation import Conversation
+from chatterbot.conversation.session import ConversationSessionManager
+from .base_case import ChatBotTestCase
 
 
-class SessionTestCase(TestCase):
+class SessionTestCase(ChatBotTestCase):
 
     def test_id_string(self):
-        session = Session()
-        self.assertEqual(str(session.uuid), session.id_string)
+        conversation = Conversation(self.chatbot.storage)
+        self.assertEqual(str(conversation.uuid), conversation.id_string)
 
 
-class ConversationSessionManagerTestCase(TestCase):
+class ConversationSessionManagerTestCase(ChatBotTestCase):
 
     def setUp(self):
         super(ConversationSessionManagerTestCase, self).setUp()
-        self.manager = ConversationSessionManager()
+        self.manager = ConversationSessionManager(self.chatbot.storage)
 
     def test_new(self):
         session = self.manager.new()
 
-        self.assertTrue(isinstance(session, Session))
+        self.assertTrue(isinstance(session, Conversation))
         self.assertIn(session.id_string, self.manager.sessions)
         self.assertEqual(session, self.manager.sessions[session.id_string])
 

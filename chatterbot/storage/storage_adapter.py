@@ -42,6 +42,19 @@ class StorageAdapter(Adapter):
             for filter_instance in chatterbot.filters:
                 self.base_query = filter_instance.filter_selection(chatterbot, session_id)
 
+    def create_conversation(self):
+        """
+        Returns a new storage-aware conversation instance.
+        """
+        import os
+
+        if 'DJANGO_SETTINGS_MODULE' in os.environ:
+            from chatterbot.ext.django_chatterbot.models import Conversation
+            return Conversation.objects.create()
+        else:
+            from chatterbot.conversation import Conversation
+            return Conversation(self)
+
     def count(self):
         """
         Return the number of entries in the database.
