@@ -25,10 +25,11 @@ class StatementManager(object):
         statement.conversation_id = self.conversation_id
         self.storage.update(statement)
 
+
 class Session(object):
     """
     A single chat session.
-    TODO: Rename to Conversation
+    In the future this class will be renamed to `Conversation`.
     """
 
     def __init__(self, storage):
@@ -42,8 +43,17 @@ class Session(object):
         self.id = str(self.uuid)
 
         # The last 10 statement inputs and outputs
-        self.conversation = ResponseQueue(maxsize=10)
         self.statements = StatementManager(self.storage, self.id)
+
+    def get_last_response_statement(self):
+        """
+        Return the last statement that was received.
+        """
+        statements = self.statements.all()
+        if statements:
+            # Return the latest output statement (This should be ordering them by date to get the latest)
+            return statements[-1]
+        return None
 
 
 class ConversationSessionManager(object):
@@ -77,7 +87,7 @@ class ConversationSessionManager(object):
         """
         session_id = str(session_id)
         if session_id in self.sessions:
-            self.sessions[session_id].conversation.append(conversance)
+            # self.sessions[session_id].conversation.append(conversance)
             for statement in conversance:
                 self.sessions[session_id].statements.add(statement)
 
@@ -97,6 +107,6 @@ class ConversationSessionManager(object):
         """
         if self.sessions:
             session_id = list(self.sessions.keys())[0]
-            self.sessions[session_id].conversation.append(conversance)
+            # self.sessions[session_id].conversation.append(conversance)
             for statement in conversance:
                 self.sessions[session_id].statements.add(statement)
